@@ -9,20 +9,30 @@ const STORAGE_KEYS = {
 // Tasks Management
 export const getTasks = () => {
     try {
-        const tasks = localStorage.getItem(STORAGE_KEYS.TASKS);
-        return tasks ? JSON.parse(tasks) : [];
+        const rawData = localStorage.getItem(STORAGE_KEYS.TASKS);
+        console.log('📋 [getTasks] Raw localStorage data:', rawData);
+        const tasks = rawData ? JSON.parse(rawData) : [];
+        console.log(`📋 Loaded ${tasks.length} tasks from localStorage`, tasks);
+        return tasks;
     } catch (error) {
-        console.error('Error loading tasks:', error);
+        console.error('❌ Error loading tasks:', error);
         return [];
     }
 };
 
 export const saveTasks = (tasks) => {
     try {
-        localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks));
+        const tasksToSave = Array.isArray(tasks) ? tasks : [];
+        const jsonString = JSON.stringify(tasksToSave);
+        localStorage.setItem(STORAGE_KEYS.TASKS, jsonString);
+        console.log(`✅ Saved ${tasksToSave.length} tasks to localStorage`);
         return true;
     } catch (error) {
-        console.error('Error saving tasks:', error);
+        console.error('❌ Error saving tasks:', error);
+        // Check if quota exceeded
+        if (error.name === 'QuotaExceededError') {
+            alert('Espacio de almacenamiento lleno. Por favor, exporta y elimina algunos trabajos antiguos.');
+        }
         return false;
     }
 };

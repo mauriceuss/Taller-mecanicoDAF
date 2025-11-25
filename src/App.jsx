@@ -6,7 +6,13 @@ import { getTasks, saveTasks, exportData, importData } from './utils/storage';
 import './App.css';
 
 function App() {
-    const [tasks, setTasks] = useState([]);
+    // Initialize state with data from localStorage to avoid StrictMode issues
+    const [tasks, setTasks] = useState(() => {
+        console.log('🔵 [INIT] Inicializando estado con datos de localStorage...');
+        const loadedTasks = getTasks();
+        console.log('🔵 [INIT] Tareas cargadas en inicialización:', loadedTasks);
+        return loadedTasks;
+    });
     const [showForm, setShowForm] = useState(false);
     const [editingTask, setEditingTask] = useState(null);
     const [showMechanicManager, setShowMechanicManager] = useState(false);
@@ -14,17 +20,12 @@ function App() {
     const [filterStatus, setFilterStatus] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Load tasks on mount
-    useEffect(() => {
-        const loadedTasks = getTasks();
-        setTasks(loadedTasks);
-    }, []);
-
     // Save tasks whenever they change
     useEffect(() => {
-        if (tasks.length > 0 || getTasks().length > 0) {
-            saveTasks(tasks);
-        }
+        console.log('🟡 [SAVE] useEffect ejecutándose...');
+        console.log('🟡 [SAVE] tasks actuales:', tasks);
+        console.log('🟢 [SAVE] Guardando tareas...');
+        saveTasks(tasks);
     }, [tasks]);
 
     const handleAddTask = (taskData) => {

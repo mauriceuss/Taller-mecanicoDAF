@@ -3,13 +3,15 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  // 🟢 AÑADE ESTA LÍNEA CLAVE 🟢
-  base: './', 
+  base: './',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
   },
   server: {
-    port: 5173,
+    host: '127.0.0.1',
+    port: 3000,
+    open: true,
+    strictPort: false,
   },
 });
