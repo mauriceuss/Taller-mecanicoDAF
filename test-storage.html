@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test LocalStorage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #16213e;
+            border-radius: 5px;
+            min-height: 100px;
+        }
+
+        input {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #667eea;
+            background: #16213e;
+            color: white;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔧 Test de LocalStorage</h1>
+    <p>Esta página prueba que localStorage funciona correctamente en tu navegador.</p>
+
+    <div>
+        <input type="text" id="taskInput" placeholder="Escribe una tarea...">
+        <button onclick="addTask()">Agregar Tarea</button>
+        <button onclick="loadTasks()">Cargar Tareas</button>
+        <button onclick="clearTasks()">Limpiar Todo</button>
+    </div>
+
+    <div id="output"></div>
+
+    <script>
+        const STORAGE_KEY = 'test_tasks';
+
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const task = input.value.trim();
+
+            if (!task) {
+                alert('Por favor escribe una tarea');
+                return;
+            }
+
+            const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            tasks.push({
+                id: Date.now(),
+                text: task,
+                createdAt: new Date().toISOString()
+            });
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+            console.log('✅ Guardado:', tasks);
+
+            input.value = '';
+            loadTasks();
+        }
+
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const output = document.getElementById('output');
+
+            console.log('📋 Cargado:', tasks);
+
+            if (tasks.length === 0) {
+                output.innerHTML = '<p style="color: #888;">No hay tareas guardadas</p>';
+            } else {
+                output.innerHTML = '<h3>Tareas guardadas:</h3>' +
+                    tasks.map(t => `<p>✓ ${t.text} <small>(${new Date(t.createdAt).toLocaleString()})</small></p>`).join('');
+            }
+        }
+
+        function clearTasks() {
+            localStorage.removeItem(STORAGE_KEY);
+            console.log('🗑️ Limpiado');
+            loadTasks();
+        }
+
+        // Cargar al inicio
+        loadTasks();
+    </script>
+</body>
+
+</html>
